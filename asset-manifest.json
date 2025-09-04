@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/boccia/static/css/main.95b33573.css",
-    "main.js": "/boccia/static/js/main.4f62ee03.js",
+    "main.css": "/boccia/static/css/main.b9e93773.css",
+    "main.js": "/boccia/static/js/main.7fcacf62.js",
     "index.html": "/boccia/index.html",
-    "main.95b33573.css.map": "/boccia/static/css/main.95b33573.css.map",
-    "main.4f62ee03.js.map": "/boccia/static/js/main.4f62ee03.js.map"
+    "main.b9e93773.css.map": "/boccia/static/css/main.b9e93773.css.map",
+    "main.7fcacf62.js.map": "/boccia/static/js/main.7fcacf62.js.map"
   },
   "entrypoints": [
-    "static/css/main.95b33573.css",
-    "static/js/main.4f62ee03.js"
+    "static/css/main.b9e93773.css",
+    "static/js/main.7fcacf62.js"
   ]
 }
