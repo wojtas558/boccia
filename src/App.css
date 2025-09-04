@@ -1,21 +1,40 @@
-.main > *{
+.top-40 {
+  top: 42%;
+}
+
+.main > * {
   height: 100vh;
   flex-grow: 1;
 }
-.rounded-circle{
-  height: 50px;
-  aspect-ratio: 1;
-}
-.flag{
+.flag {
   width: 100px;
   aspect-ratio: 3/2;
 }
-.header{
-  height: 10vh;
+.header {
+  height: 0;
   left: 50%;
   transform: translate(-50%);
   z-index: 1;
 }
-.bg-danger{
+.bluePlayer {
+  background-color: var(--player-blue);
+}
+.redPlayer {
+  background-color: var(--player-red);
+}
+.rightSide {
   direction: rtl;
+}
+.points {
+  font-size: 12rem;
+  font-weight: bold;
+}
+.mainTimer {
+  top: 32%;
+  font-size: 8rem;
+  font-weight: bold;
+}
+.playerTimer {
+  font-size: 5rem;
+  font-weight: bold;
 }
