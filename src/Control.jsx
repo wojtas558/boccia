@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import ControlPlayer from './components/ControlPlayer';
 import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
 
-export default function Control() {
+export default function Control({ socket }) {
   const player = {
     club: 'KLUB (DŁUGA NAZWA)',
     name: 'AAAAA BBBBB',
@@ -34,6 +34,11 @@ export default function Control() {
   const [time, setTime] = useState(5);
   const [modal, setModal] = useState();
   const [isBreak, setBreak] = useState(false);
+  function sendMess() {
+    if (socket && socket.readyState === WebSocket.OPEN)
+      socket.send(JSON.stringify({ redPoints: matchInfoBlue.points }));
+  }
+
   const [matchInfoRed, setMatchInfoRed] = useState({
     points: 4,
     balls: 3,
@@ -98,6 +103,7 @@ export default function Control() {
           data-bs-target='#breakModal'
           className='btn btn-warning mx-2 mt-4 fs-4 fw-bold'
           onClick={() => {
+            sendMess();
             modal.show();
             setTimer(1000);
             setBreak(!isBreak);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Player from './components/Player';
 import Control from './Control';
@@ -13,6 +13,19 @@ function App() {
   const [matchInfo, setMatchInfo] = useState({
     points: 4,
   });
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const ws = new WebSocket('ws://localhost:3030');
+
+    ws.onopen = () => console.log('Połączono z websocketem');
+
+    ws.onmessage = (event) => console.log(JSON.parse(event.data));
+
+    setSocket(ws);
+
+    return () => ws.close();
+  }, []);
 
   return (
     <HashRouter>
@@ -47,7 +60,7 @@ function App() {
             </div>
           }
         />
-        <Route path='/control' element={<Control />} />
+        <Route path='/control' element={<Control socket={socket} />} />
       </Routes>
     </HashRouter>
   );
