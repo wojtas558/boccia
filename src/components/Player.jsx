@@ -10,8 +10,8 @@ export default function Player({
   const maxPoints = 6;
 
   function getColor() {
-    if (isRightSide) return switchColors ? 'bluePlayer' : 'redPlayer';
-    else return switchColors ? 'redPlayer' : 'bluePlayer';
+    if (isRightSide) return switchColors ? 'redPlayer' : 'bluePlayer';
+    else return switchColors ? 'bluePlayer' : 'redPlayer';
   }
 
   function showPoints() {
@@ -62,7 +62,8 @@ export default function Player({
         <div
           className={
             'p-2 d-flex gap-2 justify-content-end border ' +
-            (isRightSide ? 'border-start-0 ps-1' : 'border-end-0 pe-1')
+            (isRightSide ? 'border-start-0 ps-1' : 'border-end-0 pe-1') +
+            (matchInfo.points == 6 ? ' test' : '')
           }
         >
           {(() => {
