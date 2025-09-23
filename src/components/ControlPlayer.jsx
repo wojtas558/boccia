@@ -1,22 +1,43 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Ball from './Ball';
 
 export default function ControlPlayer({
   playerInfo,
   matchInfo,
   isRightSide,
+  isBreak,
   switchColors,
   setMatchInfo,
 }) {
+  function useInterval(callback, delay) {
+    const savedCallback = useRef();
+
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  }
+
   function getColor() {
     if (isRightSide) return switchColors ? 'redPlayer' : 'bluePlayer';
     else return switchColors ? 'bluePlayer' : 'redPlayer';
   }
   const maxPoints = 6;
-  const [timer, setTimer] = useState();
+  const [timer, setTimer] = useState(null);
+  const [time, setTime] = useState(5 * 60);
+
+  useInterval(() => setTime(time - 1), isBreak ? null : timer);
 
   function getTime() {
-    let time = matchInfo.time;
     return (
       parseInt(time / 60) +
       ':' +
@@ -40,21 +61,12 @@ export default function ControlPlayer({
     return points;
   }
 
-  function advanceTime() {
-    setMatchInfo({
-      points: matchInfo.points,
-      balls: matchInfo.balls,
-      started: matchInfo.started,
-      time: matchInfo.time--,
-    });
-  }
-
   function startTimer() {
-    setTimer(setInterval(advanceTime, 1000));
+    setTimer(1000);
   }
 
   function stopTimer() {
-    clearInterval(timer);
+    setTimer(null);
   }
 
   return (
@@ -84,7 +96,10 @@ export default function ControlPlayer({
               (isRightSide ? 'border-end' : 'border-start')
             }
           >
-            <span className='playerTimer'>{matchInfo.points}</span>
+            <span className='playerTimer'>
+              {matchInfo.points}
+              {isBreak}
+            </span>
             <div className='d-flex text-center d-grid gap-3'>
               <button
                 className='btn btn-outline-success'
@@ -94,7 +109,6 @@ export default function ControlPlayer({
                       points: matchInfo.points + 1,
                       balls: matchInfo.balls,
                       started: matchInfo.started,
-                      time: matchInfo.time,
                     });
                 }}
               >
@@ -116,7 +130,6 @@ export default function ControlPlayer({
                       points: matchInfo.points - 1,
                       balls: matchInfo.balls,
                       started: matchInfo.started,
-                      time: matchInfo.time,
                     });
                 }}
               >
@@ -156,7 +169,6 @@ export default function ControlPlayer({
                     points: matchInfo.points,
                     balls: matchInfo.balls + 1,
                     started: matchInfo.started,
-                    time: matchInfo.time,
                   });
               }}
             >
@@ -176,7 +188,6 @@ export default function ControlPlayer({
                     points: matchInfo.points,
                     balls: matchInfo.balls - 1,
                     started: matchInfo.started,
-                    time: matchInfo.time,
                   });
               }}
             >
@@ -199,7 +210,6 @@ export default function ControlPlayer({
               points: matchInfo.points,
               balls: matchInfo.balls,
               started: !matchInfo.started,
-              time: matchInfo.time,
             });
           }}
         >
@@ -214,7 +224,6 @@ export default function ControlPlayer({
               points: matchInfo.points,
               balls: matchInfo.balls,
               started: !matchInfo.started,
-              time: matchInfo.time,
             });
           }}
         >

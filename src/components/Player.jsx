@@ -63,7 +63,7 @@ export default function Player({
           className={
             'p-2 d-flex gap-2 justify-content-end border ' +
             (isRightSide ? 'border-start-0 ps-1' : 'border-end-0 pe-1') +
-            (matchInfo.points == 6 ? ' test' : '')
+            (matchInfo.points === 6 ? ' test' : '')
           }
         >
           {(() => {

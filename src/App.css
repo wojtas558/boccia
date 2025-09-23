@@ -4,6 +4,9 @@
 .bottom-40 {
   bottom: 15%;
 }
+.modal-text {
+  font-size: 8rem;
+}
 
 .custom {
   width: 42.5vw;
