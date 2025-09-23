@@ -1,11 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ControlPlayer from './components/ControlPlayer';
 
-export default function Control() {
+export default function Control({ socket }) {
   const player = {
     club: 'KLUB (DŁUGA NAZWA)',
     name: 'AAAAA BBBBB',
   };
+
+  function sendMess() {
+    if (socket && socket.readyState === WebSocket.OPEN)
+      socket.send(JSON.stringify({ redPoints: matchInfoBlue.points }));
+  }
 
   const [matchInfoRed, setMatchInfoRed] = useState({
     points: 4,
@@ -30,7 +35,10 @@ export default function Control() {
         <div className='bg-dark border p-2'>
           <div>END 2/4</div>
         </div>
-        <button className='btn btn-warning mx-2 mt-4 fs-4 fw-bold'>
+        <button
+          onClick={sendMess}
+          className='btn btn-warning mx-2 mt-4 fs-4 fw-bold'
+        >
           BREAK
         </button>
         <button className='btn btn-warning mx-2 mt-5 fs-4 fw-bold'>
