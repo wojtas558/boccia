@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import Player from './components/Player';
 import Control from './Control';
+import Dashboard from './Dashboard';
 import { HashRouter, Route, Routes } from 'react-router';
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
           }
         />
         <Route path='/control' element={<Control socket={socket} />} />
+        <Route path='/dashboard' element={<Dashboard />} />
       </Routes>
     </HashRouter>
   );

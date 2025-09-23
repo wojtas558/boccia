@@ -8,6 +8,24 @@
   font-size: 8rem;
 }
 
+.backgroundGradient {
+  background: #0d6efd;
+  background: linear-gradient(
+    135deg,
+    rgba(13, 110, 253, 1) 15%,
+    rgba(220, 53, 69, 1) 85%
+  );
+  padding: 7.5vh !important;
+}
+.backgroundGradient > *:nth-child(1) {
+  height: 10vh;
+}
+.backgroundGradient > *:nth-child(2) {
+  height: 75vh;
+}
+.match > * {
+  padding: 1rem;
+}
 .custom {
   width: 42.5vw;
 }

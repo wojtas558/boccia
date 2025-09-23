@@ -5,7 +5,7 @@ import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
 export default function Control({ socket }) {
   const player = {
     club: 'KLUB (DŁUGA NAZWA)',
-    name: 'AAAAA BBBBB',
+    name: 'AAAAA BBBBB CCCCC',
   };
 
   function useInterval(callback, delay) {
