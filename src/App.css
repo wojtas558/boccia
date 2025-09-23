@@ -1,6 +1,22 @@
 .top-40 {
   top: 42%;
 }
+.bottom-40 {
+  bottom: 15%;
+}
+
+.custom {
+  width: 42.5vw;
+}
+.controlHeader {
+  width: 15vw;
+}
+.temp {
+  transform: translateY(-100%);
+}
+.test {
+  height: 58px;
+}
 
 .main > * {
   height: 100vh;
@@ -11,6 +27,7 @@
   aspect-ratio: 3/2;
 }
 .header {
+  position: absolute;
   height: 0;
   left: 50%;
   transform: translate(-50%);
