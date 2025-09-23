@@ -31,8 +31,10 @@ function App() {
   return (
     <HashRouter>
       <Routes>
+        <Route path='/' element={<Dashboard />} />
+        <Route path='/control' element={<Control socket={socket} />} />
         <Route
-          path='/'
+          path='/display'
           element={
             <div className='container-fluid d-flex main p-0 position-relative text-white'>
               <div className='position-absolute top-0 header fw-bold fs-3 text-center d-flex flex-column'>
@@ -61,8 +63,6 @@ function App() {
             </div>
           }
         />
-        <Route path='/control' element={<Control socket={socket} />} />
-        <Route path='/dashboard' element={<Dashboard />} />
       </Routes>
     </HashRouter>
   );

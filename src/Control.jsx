@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import ControlPlayer from './components/ControlPlayer';
 import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
+import { useLocation } from 'react-router';
 
 export default function Control({ socket }) {
   const player = {
@@ -51,6 +52,7 @@ export default function Control({ socket }) {
   });
 
   useInterval(() => setTime(time - 1), timer);
+  const location = useLocation();
 
   function getTime() {
     if (isBreak && time === 0) {
@@ -71,23 +73,23 @@ export default function Control({ socket }) {
   return (
     <div className='container-fluid d-flex main p-0 position-relative text-white'>
       <ControlPlayer
-        playerInfo={player}
+        playerInfo={{ club: location.state.club1, name: location.state.name1 }}
         matchInfo={matchInfoBlue}
         setMatchInfo={setMatchInfoBlue}
         isBreak={isBreak}
       />
       <div
-        class='modal fade'
+        className='modal fade'
         id='breakModal'
         data-bs-backdrop='static'
         data-bs-keyboard='false'
-        tabindex='-1'
+        tabIndex='-1'
         aria-labelledby='breakModalLabel'
         aria-hidden='true'
       >
-        <div class='modal-dialog modal-dialog-centered modal-lg'>
-          <div class='modal-content bg-dark text-white'>
-            <div class='modal-body modal-text text-center p-0'>
+        <div className='modal-dialog modal-dialog-centered modal-lg'>
+          <div className='modal-content bg-dark text-white'>
+            <div className='modal-body modal-text text-center p-0'>
               <div>BREAK</div>
               <div>{getTime()}</div>
             </div>
@@ -146,7 +148,7 @@ export default function Control({ socket }) {
         </div>
       </div>
       <ControlPlayer
-        playerInfo={player}
+        playerInfo={{ club: location.state.club2, name: location.state.name2 }}
         matchInfo={matchInfoRed}
         setMatchInfo={setMatchInfoRed}
         isBreak={isBreak}
