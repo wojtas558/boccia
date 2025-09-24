@@ -3,7 +3,7 @@ import ControlPlayer from './components/ControlPlayer';
 import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
 import { useLocation } from 'react-router';
 
-export default function Control({ socket }) {
+export default function Control() {
   const player = {
     club: 'KLUB (DŁUGA NAZWA)',
     name: 'AAAAA BBBBB CCCCC',
@@ -27,8 +27,20 @@ export default function Control({ socket }) {
     }, [delay]);
   }
 
+  const [socket, setSocket] = useState(null);
+
   useEffect(() => {
     setModal(new bootstrapBundle.Modal('#breakModal'));
+
+    const ws = new WebSocket('ws://localhost:3030');
+
+    ws.onopen = () => console.log('Połączono z websocketem');
+
+    ws.onmessage = (event) => console.log(JSON.parse(event.data));
+
+    setSocket(ws);
+
+    return () => ws.close();
   }, []);
 
   const [timer, setTimer] = useState(null);
@@ -37,7 +49,7 @@ export default function Control({ socket }) {
   const [isBreak, setBreak] = useState(false);
   function sendMess() {
     if (socket && socket.readyState === WebSocket.OPEN)
-      socket.send(JSON.stringify({ redPoints: matchInfoBlue.points }));
+      socket.send(JSON.stringify({ red: matchInfoRed, blue: matchInfoBlue }));
   }
 
   const [matchInfoRed, setMatchInfoRed] = useState({
@@ -73,9 +85,13 @@ export default function Control({ socket }) {
   return (
     <div className='container-fluid d-flex main p-0 position-relative text-white'>
       <ControlPlayer
-        playerInfo={{ club: location.state.club1, name: location.state.name1 }}
-        matchInfo={matchInfoBlue}
-        setMatchInfo={setMatchInfoBlue}
+        update={sendMess}
+        playerInfo={{
+          club: location.state.club1,
+          name: location.state.player1,
+        }}
+        matchInfo={matchInfoRed}
+        setMatchInfo={setMatchInfoRed}
         isBreak={isBreak}
       />
       <div
@@ -105,7 +121,6 @@ export default function Control({ socket }) {
           data-bs-target='#breakModal'
           className='btn btn-warning mx-2 mt-4 fs-4 fw-bold'
           onClick={() => {
-            sendMess();
             modal.show();
             setTimer(1000);
             setBreak(!isBreak);
@@ -148,9 +163,13 @@ export default function Control({ socket }) {
         </div>
       </div>
       <ControlPlayer
-        playerInfo={{ club: location.state.club2, name: location.state.name2 }}
-        matchInfo={matchInfoRed}
-        setMatchInfo={setMatchInfoRed}
+        update={sendMess}
+        playerInfo={{
+          club: location.state.club2,
+          name: location.state.player2,
+        }}
+        matchInfo={matchInfoBlue}
+        setMatchInfo={setMatchInfoBlue}
         isBreak={isBreak}
         isRightSide
       />

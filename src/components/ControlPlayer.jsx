@@ -6,6 +6,7 @@ export default function ControlPlayer({
   matchInfo,
   isRightSide,
   isBreak,
+  update,
   switchColors,
   setMatchInfo,
 }) {
@@ -110,6 +111,7 @@ export default function ControlPlayer({
                       balls: matchInfo.balls,
                       started: matchInfo.started,
                     });
+                  update();
                 }}
               >
                 <svg
@@ -131,6 +133,7 @@ export default function ControlPlayer({
                       balls: matchInfo.balls,
                       started: matchInfo.started,
                     });
+                  update();
                 }}
               >
                 <svg
@@ -170,6 +173,7 @@ export default function ControlPlayer({
                     balls: matchInfo.balls + 1,
                     started: matchInfo.started,
                   });
+                update();
               }}
             >
               <path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16' />
@@ -189,6 +193,7 @@ export default function ControlPlayer({
                     balls: matchInfo.balls - 1,
                     started: matchInfo.started,
                   });
+                update();
               }}
             >
               <path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16' />
@@ -211,6 +216,7 @@ export default function ControlPlayer({
               balls: matchInfo.balls,
               started: !matchInfo.started,
             });
+            update();
           }}
         >
           Start
@@ -225,6 +231,7 @@ export default function ControlPlayer({
               balls: matchInfo.balls,
               started: !matchInfo.started,
             });
+            update();
           }}
         >
           Stop

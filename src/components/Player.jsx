@@ -20,7 +20,6 @@ export default function Player({
       points.push(
         <Ball
           key={i}
-          onClick={() => setMatchInfo({ points: (matchInfo.points + 1) % 7 })}
           scored={maxPoints - matchInfo.points <= i}
           getColor={getColor}
         />,
@@ -63,22 +62,16 @@ export default function Player({
           className={
             'p-2 d-flex gap-2 justify-content-end border ' +
             (isRightSide ? 'border-start-0 ps-1' : 'border-end-0 pe-1') +
-            (matchInfo.points === 6 ? ' test' : '')
+            (matchInfo.balls === 0 ? ' test' : '')
           }
         >
           {(() => {
             const points = [];
 
-            for (let i = 0; i < maxPoints; i++) {
-              if (maxPoints - matchInfo.points > i)
-                points.push(
-                  <Ball
-                    height={40}
-                    key={i}
-                    scored={true}
-                    getColor={getColor}
-                  />,
-                );
+            for (let i = 0; i < matchInfo.balls; i++) {
+              points.push(
+                <Ball height={40} key={i} scored={true} getColor={getColor} />,
+              );
             }
             return points;
           })()}

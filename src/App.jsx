@@ -11,9 +11,7 @@ function App() {
     name: 'AAAAA BBBBB',
   };
 
-  const [matchInfo, setMatchInfo] = useState({
-    points: 4,
-  });
+  const [matchInfo, setMatchInfo] = useState({ red: {}, blue: {} });
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
@@ -21,7 +19,7 @@ function App() {
 
     ws.onopen = () => console.log('Połączono z websocketem');
 
-    ws.onmessage = (event) => console.log(JSON.parse(event.data));
+    ws.onmessage = (event) => setMatchInfo(JSON.parse(event.data));
 
     setSocket(ws);
 
@@ -32,7 +30,7 @@ function App() {
     <HashRouter>
       <Routes>
         <Route path='/' element={<Dashboard />} />
-        <Route path='/control' element={<Control socket={socket} />} />
+        <Route path='/control' element={<Control />} />
         <Route
           path='/display'
           element={
@@ -51,13 +49,13 @@ function App() {
               </div>
               <Player
                 playerInfo={player}
-                matchInfo={matchInfo}
+                matchInfo={matchInfo.red}
                 setMatchInfo={setMatchInfo}
               />
               <Player
                 playerInfo={player}
                 isRightSide={true}
-                matchInfo={matchInfo}
+                matchInfo={matchInfo.blue}
                 setMatchInfo={setMatchInfo}
               />
             </div>
