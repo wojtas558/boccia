@@ -109,8 +109,12 @@ export default function Display({ setBreak, isBreak }) {
       </div>
       <div className='position-absolute top-0 header fw-bold fs-3 text-center d-flex flex-column'>
         <div className='border p-2 px-5 bg-dark'>
-          <div>BC1 MĘŻCZYŹNI - PULA B</div>
-          <div>RUNDA 1 - KORT 3</div>
+          <div>
+            {location.state.group} - PULA {location.state.pool}
+          </div>
+          <div>
+            RUNDA {location.state.round} - KORT {location.state.court}
+          </div>
         </div>
         <div className='bg-dark border mt-4 align-self-center p-2'>
           <div>END 2</div>

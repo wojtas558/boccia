@@ -21,7 +21,8 @@ export default function Match({ data }) {
           ''
         ) : (
           <div className='px-3 border-top border-2 border-white border-opacity-25'>
-            {data.group} - {data.pool} | {data.court}
+            <b>Groupa</b> {data.group} <b>| Pula</b> {data.pool} <b> | Kort</b>{' '}
+            {data.court}
           </div>
         )}
       </div>

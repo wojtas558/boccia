@@ -1,6 +1,7 @@
 import Match from './components/Match';
 import logo from './logo.png';
 import './App.css';
+import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
 import { supabase } from './supabase';
 import { useEffect, useState } from 'react';
 
@@ -15,6 +16,20 @@ export default function Dashboard() {
 
     fetch();
   }, []);
+
+  async function Insert() {
+    await supabase.from('matches').insert({
+      player1: document.getElementById('player1').value,
+      player2: document.getElementById('player2').value,
+      club1: document.getElementById('club1').value,
+      club2: document.getElementById('club2').value,
+      group: document.getElementById('group').value,
+      pool: document.getElementById('pool').value,
+      round: document.getElementById('round').value,
+      court: document.getElementById('court').value,
+      maxEnds: document.getElementById('maxEnds').value,
+    });
+  }
 
   return (
     <div className='backgroundGradient container-fluid d-flex flex-column min-vh-100 position-relative text-white'>
@@ -44,7 +59,7 @@ export default function Dashboard() {
               </div>
               <div className='modal-body'>
                 <form className='d-flex flex-column gap-3 p-2'>
-                  <div>
+                  <div className='d-flex flex-column gap-2 p-2'>
                     Gracz 1
                     <div className='form-floating'>
                       <input
@@ -67,7 +82,7 @@ export default function Dashboard() {
                       <label htmlFor='club1'>Klub</label>
                     </div>
                   </div>
-                  <div>
+                  <div className='d-flex flex-column gap-2 p-2'>
                     Gracz 2
                     <div className='form-floating'>
                       <input
@@ -90,6 +105,60 @@ export default function Dashboard() {
                       <label htmlFor='club2'>Klub</label>
                     </div>
                   </div>
+                  <div className='d-flex flex-column gap-2 p-2'>
+                    Mecz
+                    <div className='form-floating'>
+                      <input
+                        placeholder=''
+                        type='text'
+                        name='group'
+                        id='group'
+                        className='form-control'
+                      />
+                      <label htmlFor='group'>Grupa</label>
+                    </div>
+                    <div className='form-floating'>
+                      <input
+                        placeholder=''
+                        type='text'
+                        name='pool'
+                        id='pool'
+                        className='form-control'
+                      />
+                      <label htmlFor='pool'>Pula</label>
+                    </div>
+                    <div className='form-floating'>
+                      <input
+                        placeholder=''
+                        type='number'
+                        name='round'
+                        id='round'
+                        className='form-control'
+                      />
+                      <label htmlFor='round'>Runda</label>
+                    </div>
+                    <div className='form-floating'>
+                      <input
+                        placeholder=''
+                        type='text'
+                        name='court'
+                        id='court'
+                        className='form-control'
+                      />
+                      <label htmlFor='court'>Kort</label>
+                    </div>
+                    <div className='form-floating'>
+                      <input
+                        placeholder=''
+                        defaultValue={4}
+                        type='text'
+                        name='maxEnds'
+                        id='maxEnds'
+                        className='form-control'
+                      />
+                      <label htmlFor='maxEnds'>Maksymalna liczba endów</label>
+                    </div>
+                  </div>
                 </form>
               </div>
               <div className='modal-footer'>
@@ -104,13 +173,23 @@ export default function Dashboard() {
                   type='button'
                   className='btn btn-success'
                   onClick={async (e) => {
-                    await supabase.from('matches').insert({
-                      player1: document.getElementById('player1').value,
-                      player2: document.getElementById('player2').value,
-                      club1: document.getElementById('club1').value,
-                      club2: document.getElementById('club2').value,
-                    });
-                    console.log(document.getElementById('player1').value);
+                    if (
+                      !document.getElementById('player1').value ||
+                      !document.getElementById('player2').value ||
+                      !document.getElementById('club1').value ||
+                      !document.getElementById('club2').value ||
+                      !document.getElementById('group').value ||
+                      !document.getElementById('pool').value ||
+                      !document.getElementById('round').value ||
+                      !document.getElementById('court').value ||
+                      !document.getElementById('maxEnds').value
+                    )
+                      alert('Brak danych');
+                    else {
+                      await Insert();
+
+                      window.location.reload();
+                    }
                   }}
                 >
                   Zapisz

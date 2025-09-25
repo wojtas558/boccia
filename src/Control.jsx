@@ -75,7 +75,7 @@ export default function Control({ setBreak, isBreak }) {
       />
       <div className='header controlHeader fw-bold fs-4 text-center d-flex flex-column '>
         <div className='bg-dark border p-2'>
-          <div>END 2/4</div>
+          <div>END 2/{location.state.maxEnds}</div>
         </div>
         <button
           className='btn btn-warning mx-2 mt-4 fs-4 fw-bold'
