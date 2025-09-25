@@ -29,7 +29,7 @@ export default function Match({ data }) {
         <button
           className='btn btn-outline-info me-3'
           onClick={() => {
-            navigate('display');
+            navigate('display', { state: data });
           }}
         >
           Wyświetlanie

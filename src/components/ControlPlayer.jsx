@@ -8,6 +8,7 @@ export default function ControlPlayer({
   isBreak,
   update,
   switchColors,
+  toggleOtherTimer,
   setMatchInfo,
 }) {
   function useInterval(callback, delay) {
@@ -27,6 +28,10 @@ export default function ControlPlayer({
       }
     }, [delay]);
   }
+
+  useEffect(() => {
+    update();
+  }, [matchInfo]);
 
   function getColor() {
     if (isRightSide) return switchColors ? 'redPlayer' : 'bluePlayer';
@@ -63,10 +68,14 @@ export default function ControlPlayer({
   }
 
   function startTimer() {
+    setMatchInfo({ ...matchInfo, break: false });
+    toggleOtherTimer();
     setTimer(1000);
   }
 
   function stopTimer() {
+    toggleOtherTimer();
+    setMatchInfo({ ...matchInfo, timerDisabled: false });
     setTimer(null);
   }
 
@@ -109,9 +118,9 @@ export default function ControlPlayer({
                     setMatchInfo({
                       points: matchInfo.points + 1,
                       balls: matchInfo.balls,
+                      timerDisabled: matchInfo.timerDisabled,
                       started: matchInfo.started,
                     });
-                  update();
                 }}
               >
                 <svg
@@ -131,9 +140,9 @@ export default function ControlPlayer({
                     setMatchInfo({
                       points: matchInfo.points - 1,
                       balls: matchInfo.balls,
+                      timerDisabled: matchInfo.timerDisabled,
                       started: matchInfo.started,
                     });
-                  update();
                 }}
               >
                 <svg
@@ -171,9 +180,9 @@ export default function ControlPlayer({
                   setMatchInfo({
                     points: matchInfo.points,
                     balls: matchInfo.balls + 1,
+                    timerDisabled: matchInfo.timerDisabled,
                     started: matchInfo.started,
                   });
-                update();
               }}
             >
               <path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16' />
@@ -191,9 +200,9 @@ export default function ControlPlayer({
                   setMatchInfo({
                     points: matchInfo.points,
                     balls: matchInfo.balls - 1,
+                    timerDisabled: matchInfo.timerDisabled,
                     started: matchInfo.started,
                   });
-                update();
               }}
             >
               <path d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16' />
@@ -208,15 +217,15 @@ export default function ControlPlayer({
       <div className='translate-middle position-absolute bottom-40 start-50 d-flex gap-4'>
         <button
           className='btn btn-warning fs-3 fw-semibold'
-          disabled={matchInfo.started}
+          disabled={matchInfo.started || matchInfo.timerDisabled}
           onClick={() => {
             startTimer();
             setMatchInfo({
               points: matchInfo.points,
               balls: matchInfo.balls,
+              timerDisabled: matchInfo.timerDisabled,
               started: !matchInfo.started,
             });
-            update();
           }}
         >
           Start
@@ -229,9 +238,9 @@ export default function ControlPlayer({
             setMatchInfo({
               points: matchInfo.points,
               balls: matchInfo.balls,
+              timerDisabled: matchInfo.timerDisabled,
               started: !matchInfo.started,
             });
-            update();
           }}
         >
           Stop

@@ -1,86 +1,58 @@
 import { useEffect, useRef, useState } from 'react';
 import ControlPlayer from './components/ControlPlayer';
-import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
 import { useLocation } from 'react-router';
 
-export default function Control() {
-  const player = {
-    club: 'KLUB (DŁUGA NAZWA)',
-    name: 'AAAAA BBBBB CCCCC',
-  };
-
-  function useInterval(callback, delay) {
-    const savedCallback = useRef();
-
-    useEffect(() => {
-      savedCallback.current = callback;
-    }, [callback]);
-
-    useEffect(() => {
-      function tick() {
-        savedCallback.current();
-      }
-      if (delay !== null) {
-        let id = setInterval(tick, delay);
-        return () => clearInterval(id);
-      }
-    }, [delay]);
-  }
-
+export default function Control({ setBreak, isBreak }) {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    setModal(new bootstrapBundle.Modal('#breakModal'));
-
     const ws = new WebSocket('ws://localhost:3030');
 
     ws.onopen = () => console.log('Połączono z websocketem');
 
-    ws.onmessage = (event) => console.log(JSON.parse(event.data));
+    ws.onmessage = (event) => {
+      if (JSON.parse(event.data).start && JSON.parse(event.data).id === -1)
+        ws.send(
+          JSON.stringify({
+            id: location.state.id,
+            red: matchInfoRed,
+            blue: matchInfoBlue,
+          }),
+        );
+    };
 
     setSocket(ws);
 
     return () => ws.close();
   }, []);
 
-  const [timer, setTimer] = useState(null);
-  const [time, setTime] = useState(5);
-  const [modal, setModal] = useState();
-  const [isBreak, setBreak] = useState(false);
   function sendMess() {
     if (socket && socket.readyState === WebSocket.OPEN)
-      socket.send(JSON.stringify({ red: matchInfoRed, blue: matchInfoBlue }));
+      socket.send(
+        JSON.stringify({
+          id: location.state.id,
+          red: matchInfoRed,
+          blue: matchInfoBlue,
+        }),
+      );
   }
+
+  const [] = useState(false);
 
   const [matchInfoRed, setMatchInfoRed] = useState({
     points: 4,
     balls: 3,
+    timerDisabled: false,
     started: false,
   });
   const [matchInfoBlue, setMatchInfoBlue] = useState({
     points: 4,
     balls: 3,
+    timerDisabled: false,
     started: false,
   });
 
-  useInterval(() => setTime(time - 1), timer);
   const location = useLocation();
-
-  function getTime() {
-    if (isBreak && time === 0) {
-      setTimer(null);
-      setBreak(false);
-      modal.hide();
-
-      return '0:00';
-    }
-
-    return (
-      parseInt(time / 60) +
-      ':' +
-      (time % 60).toLocaleString('en-US', { minimumIntegerDigits: 2 })
-    );
-  }
 
   return (
     <div className='container-fluid d-flex main p-0 position-relative text-white'>
@@ -91,49 +63,37 @@ export default function Control() {
           name: location.state.player1,
         }}
         matchInfo={matchInfoRed}
+        toggleOtherTimer={() => {
+          setMatchInfoBlue({
+            ...matchInfoBlue,
+            break: false,
+            timerDisabled: !matchInfoBlue.timerDisabled,
+          });
+        }}
         setMatchInfo={setMatchInfoRed}
         isBreak={isBreak}
       />
-      <div
-        className='modal fade'
-        id='breakModal'
-        data-bs-backdrop='static'
-        data-bs-keyboard='false'
-        tabIndex='-1'
-        aria-labelledby='breakModalLabel'
-        aria-hidden='true'
-      >
-        <div className='modal-dialog modal-dialog-centered modal-lg'>
-          <div className='modal-content bg-dark text-white'>
-            <div className='modal-body modal-text text-center p-0'>
-              <div>BREAK</div>
-              <div>{getTime()}</div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className='header controlHeader fw-bold fs-4 text-center d-flex flex-column '>
         <div className='bg-dark border p-2'>
           <div>END 2/4</div>
         </div>
         <button
-          data-bs-toggle='modal'
-          data-bs-target='#breakModal'
           className='btn btn-warning mx-2 mt-4 fs-4 fw-bold'
           onClick={() => {
-            modal.show();
-            setTimer(1000);
             setBreak(!isBreak);
-            setTime(5 * 60);
             setMatchInfoRed({
+              break: true,
               points: matchInfoRed.points,
               balls: matchInfoRed.balls,
               started: false,
+              time: 90,
             });
             setMatchInfoBlue({
+              break: true,
               points: matchInfoBlue.points,
               balls: matchInfoBlue.balls,
               started: false,
+              time: 90,
             });
           }}
         >
@@ -170,6 +130,13 @@ export default function Control() {
         }}
         matchInfo={matchInfoBlue}
         setMatchInfo={setMatchInfoBlue}
+        toggleOtherTimer={() => {
+          setMatchInfoRed({
+            ...matchInfoRed,
+            break: false,
+            timerDisabled: !matchInfoRed.timerDisabled,
+          });
+        }}
         isBreak={isBreak}
         isRightSide
       />
