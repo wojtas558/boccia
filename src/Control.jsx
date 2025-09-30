@@ -1,11 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ControlPlayer from './components/ControlPlayer';
-import { useLocation } from 'react-router';
+import { supabase } from './supabase';
+import { useParams } from 'react-router';
 
 export default function Control({ setBreak, isBreak }) {
   const [socket, setSocket] = useState(null);
+  const { id } = useParams();
 
   useEffect(() => {
+    async function fetch() {
+      const temp = await supabase.from('matches').select().eq('id', id);
+      setMatchData(temp.data[0]);
+    }
+    fetch();
+
     const ws = new WebSocket('ws://localhost:3030');
 
     ws.onopen = () => console.log('Połączono z websocketem');
@@ -14,7 +22,7 @@ export default function Control({ setBreak, isBreak }) {
       if (JSON.parse(event.data).start && JSON.parse(event.data).id === -1)
         ws.send(
           JSON.stringify({
-            id: location.state.id,
+            id: id,
             red: matchInfoRed,
             blue: matchInfoBlue,
           }),
@@ -30,7 +38,7 @@ export default function Control({ setBreak, isBreak }) {
     if (socket && socket.readyState === WebSocket.OPEN)
       socket.send(
         JSON.stringify({
-          id: location.state.id,
+          id: id,
           red: matchInfoRed,
           blue: matchInfoBlue,
         }),
@@ -52,15 +60,15 @@ export default function Control({ setBreak, isBreak }) {
     started: false,
   });
 
-  const location = useLocation();
+  const [matchData, setMatchData] = useState([]);
 
   return (
     <div className='container-fluid d-flex main p-0 position-relative text-white'>
       <ControlPlayer
         update={sendMess}
         playerInfo={{
-          club: location.state.club1,
-          name: location.state.player1,
+          club: matchData.club1,
+          name: matchData.player1,
         }}
         matchInfo={matchInfoRed}
         toggleOtherTimer={() => {
@@ -75,7 +83,7 @@ export default function Control({ setBreak, isBreak }) {
       />
       <div className='header controlHeader fw-bold fs-4 text-center d-flex flex-column '>
         <div className='bg-dark border p-2'>
-          <div>END 2/{location.state.maxEnds}</div>
+          <div>END 2/{matchData.maxEnds}</div>
         </div>
         <button
           className='btn btn-warning mx-2 mt-4 fs-4 fw-bold'
@@ -125,8 +133,8 @@ export default function Control({ setBreak, isBreak }) {
       <ControlPlayer
         update={sendMess}
         playerInfo={{
-          club: location.state.club2,
-          name: location.state.player2,
+          club: matchData.club2,
+          name: matchData.player2,
         }}
         matchInfo={matchInfoBlue}
         setMatchInfo={setMatchInfoBlue}
