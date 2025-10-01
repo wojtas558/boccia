@@ -6,10 +6,7 @@ export default function Player({
   matchInfo,
   isRightSide,
   switchColors,
-  setMatchInfo,
 }) {
-  const maxPoints = 6;
-
   function useInterval(callback, delay) {
     const savedCallback = useRef();
 
@@ -33,15 +30,11 @@ export default function Player({
     else return switchColors ? 'bluePlayer' : 'redPlayer';
   }
 
-  function showPoints() {
+  function showBalls() {
     const points = [];
-    for (let i = 0; i < maxPoints; i++) {
+    for (let i = 0; i < 6; i++) {
       points.push(
-        <Ball
-          key={i}
-          scored={maxPoints - matchInfo.points <= i}
-          getColor={getColor}
-        />,
+        <Ball key={i} scored={6 - matchInfo.balls <= i} getColor={getColor} />,
       );
     }
 
@@ -90,31 +83,14 @@ export default function Player({
       <div className='translate-middle position-absolute top-40 start-50 points'>
         {matchInfo.points}
       </div>
-      <div className='bg-dark position-absolute bottom-0 w-100'>
-        <div className='border'>
-          <div className='d-flex justify-content-between p-3 pb-0'>
-            {showPoints()}
-          </div>
-          <div className='text-center playerTimer lh-sm'>{getTime()}</div>
+      <div className='bg-dark position-absolute bottom-0 w-100 border'>
+        <div className='d-flex justify-content-between p-3 pb-0'>
+          {showBalls()}
         </div>
-        <div
-          className={
-            'p-2 d-flex gap-2 justify-content-end border ' +
-            (isRightSide ? 'border-start-0 ps-1' : 'border-end-0 pe-1') +
-            (matchInfo.balls === 0 ? ' test' : '')
-          }
-        >
-          {(() => {
-            const points = [];
-
-            for (let i = 0; i < matchInfo.balls; i++) {
-              points.push(
-                <Ball height={40} key={i} scored={true} getColor={getColor} />,
-              );
-            }
-            return points;
-          })()}
-        </div>
+        <div className='text-center playerTimer lh-sm'>{getTime()}</div>
+        <div className='border border-dark' />
+        {/* JAK USUNIESZ TEN DIV TO SIE ROZJEŻDŻA STRONA I POJAWIA SIĘ SCROLL 
+        NIE MAM POJECIA DLACZEGO, ALE NA RAZIE ZOSTAJE  */}
       </div>
     </div>
   );

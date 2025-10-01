@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ControlPlayer from './components/ControlPlayer';
 import { supabase } from './supabase';
 import { useParams } from 'react-router';
@@ -27,7 +27,7 @@ export default function Control({ setBreak, isBreak }) {
     setSocket(ws);
 
     return () => ws.close();
-  }, []);
+  }, [id]);
 
   function sendMess() {
     setInit(false);
@@ -42,14 +42,14 @@ export default function Control({ setBreak, isBreak }) {
   }
 
   const [matchInfoRed, setMatchInfoRed] = useState({
-    points: 4,
-    balls: 3,
+    points: 0,
+    balls: 6,
     timerDisabled: false,
     started: false,
   });
   const [matchInfoBlue, setMatchInfoBlue] = useState({
-    points: 4,
-    balls: 3,
+    points: 0,
+    balls: 6,
     timerDisabled: false,
     started: false,
   });
@@ -85,19 +85,21 @@ export default function Control({ setBreak, isBreak }) {
           className='btn btn-warning mx-2 mt-4 fs-4 fw-bold'
           onClick={() => {
             setBreak(!isBreak);
+            console.log(isBreak);
+
             setMatchInfoRed({
-              break: true,
+              break: isBreak,
               points: matchInfoRed.points,
               balls: matchInfoRed.balls,
               started: false,
-              time: 90,
+              breakTime: 90,
             });
             setMatchInfoBlue({
-              break: true,
+              break: isBreak,
               points: matchInfoBlue.points,
               balls: matchInfoBlue.balls,
               started: false,
-              time: 90,
+              breakTime: 90,
             });
           }}
         >

@@ -22,7 +22,7 @@ export default function Display({ setBreak, isBreak }) {
 
     ws.onmessage = (event) => {
       let data = JSON.parse(event.data);
-      if (id == data.id) setMatchInfo(data);
+      if (id === data.id) setMatchInfo(data);
     };
 
     setSocket(ws);
@@ -30,7 +30,7 @@ export default function Display({ setBreak, isBreak }) {
     return () => ws.close();
   }, []);
 
-  const [matchData, setMatchData] = useState([]);
+  const [matchData, setMatchData] = useState({});
   const [modal, setModal] = useState();
   const [matchInfo, setMatchInfo] = useState({ red: {}, blue: {} });
   const [timer, setTimer] = useState(null);
@@ -40,7 +40,12 @@ export default function Display({ setBreak, isBreak }) {
   useEffect(() => {
     if (matchInfo.red.break) {
       modal.show();
+      setTime(90);
       setTimer(1000);
+    } else if (matchInfo.red.break === false) {
+      setTime(90);
+      setTimer(null);
+      modal.hide();
     }
   }, [matchInfo.red.break]);
 
@@ -53,14 +58,14 @@ export default function Display({ setBreak, isBreak }) {
           points: matchInfo.red.points,
           balls: matchInfo.red.balls,
           started: false,
-          time: 90,
+          breakTime: 90,
         },
         blue: {
           break: false,
           points: matchInfo.blue.points,
           balls: matchInfo.blue.balls,
           started: false,
-          time: 90,
+          breakTime: 90,
         },
       });
       setTimer(null);
@@ -110,7 +115,7 @@ export default function Display({ setBreak, isBreak }) {
         <div className='modal-dialog modal-dialog-centered modal-lg'>
           <div className='modal-content bg-dark text-white'>
             <div className='modal-body modal-text text-center p-0'>
-              <div>BREAK</div>
+              <div>PRZERWA</div>
               <div>{matchInfo.red.break ? getTime() : '0:00'}</div>
             </div>
           </div>

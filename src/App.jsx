@@ -6,7 +6,7 @@ import { Route, Routes, BrowserRouter } from 'react-router';
 import Display from './Display';
 
 function App() {
-  const [isBreak, setBreak] = useState(false);
+  const [isBreak, setBreak] = useState(true);
 
   return (
     <BrowserRouter>

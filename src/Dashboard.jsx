@@ -1,7 +1,6 @@
 import Match from './components/Match';
 import logo from './logo.png';
 import './App.css';
-import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
 import { supabase } from './supabase';
 import { useEffect, useState } from 'react';
 
