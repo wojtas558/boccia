@@ -3,7 +3,7 @@ import './App.css';
 import Control from './Control';
 import Dashboard from './Dashboard';
 import { Route, Routes, BrowserRouter } from 'react-router';
-import Display from './components/Display';
+import Display from './Display';
 
 function App() {
   const [isBreak, setBreak] = useState(false);

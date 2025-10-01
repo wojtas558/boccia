@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import ControlPlayer from './components/ControlPlayer';
 import { supabase } from './supabase';
 import { useParams } from 'react-router';
@@ -19,14 +19,9 @@ export default function Control({ setBreak, isBreak }) {
     ws.onopen = () => console.log('Połączono z websocketem');
 
     ws.onmessage = (event) => {
-      if (JSON.parse(event.data).start && JSON.parse(event.data).id === -1)
-        ws.send(
-          JSON.stringify({
-            id: id,
-            red: matchInfoRed,
-            blue: matchInfoBlue,
-          }),
-        );
+      if (JSON.parse(event.data).start && JSON.parse(event.data).id === -1) {
+        setInit(true);
+      }
     };
 
     setSocket(ws);
@@ -35,6 +30,7 @@ export default function Control({ setBreak, isBreak }) {
   }, []);
 
   function sendMess() {
+    setInit(false);
     if (socket && socket.readyState === WebSocket.OPEN)
       socket.send(
         JSON.stringify({
@@ -59,10 +55,12 @@ export default function Control({ setBreak, isBreak }) {
   });
 
   const [matchData, setMatchData] = useState([]);
+  const [init, setInit] = useState(false);
 
   return (
     <div className='container-fluid d-flex main p-0 position-relative text-white'>
       <ControlPlayer
+        init={init}
         update={sendMess}
         playerInfo={{
           club: matchData.club1,
@@ -129,6 +127,7 @@ export default function Control({ setBreak, isBreak }) {
         </div>
       </div>
       <ControlPlayer
+        init={init}
         update={sendMess}
         playerInfo={{
           club: matchData.club2,

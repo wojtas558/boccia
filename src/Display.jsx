@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
-import Player from './Player';
+import Player from './components/Player';
 import { useParams } from 'react-router';
-import { supabase } from '../supabase';
+import { supabase } from './supabase';
 
 export default function Display({ setBreak, isBreak }) {
   const { id } = useParams();

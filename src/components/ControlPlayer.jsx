@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Ball from './Ball';
 
 export default function ControlPlayer({
+  init,
   playerInfo,
   matchInfo,
   isRightSide,
@@ -32,6 +33,10 @@ export default function ControlPlayer({
   useEffect(() => {
     update();
   }, [matchInfo]);
+
+  useEffect(() => {
+    update();
+  }, [init]);
 
   function getColor() {
     if (isRightSide) return switchColors ? 'redPlayer' : 'bluePlayer';
