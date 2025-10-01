@@ -1,10 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
-import Player from './components/Player';
-import { useLocation } from 'react-router';
+import Player from './Player';
+import { useParams } from 'react-router';
+import { supabase } from '../supabase';
 
 export default function Display({ setBreak, isBreak }) {
+  const { id } = useParams();
+
   useEffect(() => {
+    async function fetch() {
+      const temp = await supabase.from('matches').select().eq('id', id);
+      setMatchData(temp.data[0]);
+    }
+
+    fetch();
+
     setModal(new bootstrapBundle.Modal('#breakModal'));
     const ws = new WebSocket('ws://localhost:3030');
     ws.onopen = () =>
@@ -12,7 +22,7 @@ export default function Display({ setBreak, isBreak }) {
 
     ws.onmessage = (event) => {
       let data = JSON.parse(event.data);
-      if (location.state.id == data.id) setMatchInfo(data);
+      if (id == data.id) setMatchInfo(data);
     };
 
     setSocket(ws);
@@ -20,6 +30,7 @@ export default function Display({ setBreak, isBreak }) {
     return () => ws.close();
   }, []);
 
+  const [matchData, setMatchData] = useState([]);
   const [modal, setModal] = useState();
   const [matchInfo, setMatchInfo] = useState({ red: {}, blue: {} });
   const [timer, setTimer] = useState(null);
@@ -87,8 +98,6 @@ export default function Display({ setBreak, isBreak }) {
     setTime(time - 1);
   }, timer);
 
-  const location = useLocation();
-
   return (
     <div className='container-fluid d-flex main p-0 position-relative text-white'>
       <div
@@ -110,10 +119,10 @@ export default function Display({ setBreak, isBreak }) {
       <div className='position-absolute top-0 header fw-bold fs-3 text-center d-flex flex-column'>
         <div className='border p-2 px-5 bg-dark'>
           <div>
-            {location.state.group} - PULA {location.state.pool}
+            {matchData.group} - PULA {matchData.pool}
           </div>
           <div>
-            RUNDA {location.state.round} - KORT {location.state.court}
+            RUNDA {matchData.round} - KORT {matchData.court}
           </div>
         </div>
         <div className='bg-dark border mt-4 align-self-center p-2'>
@@ -125,16 +134,16 @@ export default function Display({ setBreak, isBreak }) {
       </div>
       <Player
         playerInfo={{
-          club: location.state.club1,
-          name: location.state.player1,
+          club: matchData.club1,
+          name: matchData.player1,
         }}
         matchInfo={matchInfo.red}
         setMatchInfo={setMatchInfo}
       />
       <Player
         playerInfo={{
-          club: location.state.club2,
-          name: location.state.player2,
+          club: matchData.club2,
+          name: matchData.player2,
         }}
         isRightSide={true}
         matchInfo={matchInfo.blue}
