@@ -1,3 +1,4 @@
+import { useEffect, useState, useRef } from 'react';
 import Ball from './Ball';
 
 export default function Player({
@@ -8,6 +9,24 @@ export default function Player({
   setMatchInfo,
 }) {
   const maxPoints = 6;
+
+  function useInterval(callback, delay) {
+    const savedCallback = useRef();
+
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
+  }
 
   function getColor() {
     if (isRightSide) return switchColors ? 'redPlayer' : 'bluePlayer';
@@ -28,6 +47,26 @@ export default function Player({
 
     return points;
   }
+
+  function getTime() {
+    return (
+      parseInt(time / 60) +
+      ':' +
+      (time % 60).toLocaleString('en-US', { minimumIntegerDigits: 2 })
+    );
+  }
+
+  useEffect(() => {
+    console.log(matchInfo.timer, matchInfo.time);
+
+    setTimer(matchInfo.timer ?? null);
+    setTime(matchInfo.time ?? time);
+  }, [matchInfo]);
+
+  const [timer, setTimer] = useState(null);
+  const [time, setTime] = useState(5 * 60);
+
+  useInterval(() => setTime(time - 1), timer);
 
   return (
     <div
@@ -56,7 +95,7 @@ export default function Player({
           <div className='d-flex justify-content-between p-3 pb-0'>
             {showPoints()}
           </div>
-          <div className='text-center playerTimer lh-sm'>5:00</div>
+          <div className='text-center playerTimer lh-sm'>{getTime()}</div>
         </div>
         <div
           className={

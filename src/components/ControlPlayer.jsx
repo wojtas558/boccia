@@ -68,14 +68,14 @@ export default function ControlPlayer({
   }
 
   function startTimer() {
-    setMatchInfo({ ...matchInfo, break: false });
+    setMatchInfo({ ...matchInfo, break: false, timer: 1000 });
     toggleOtherTimer();
     setTimer(1000);
   }
 
   function stopTimer() {
     toggleOtherTimer();
-    setMatchInfo({ ...matchInfo, timerDisabled: false });
+    setMatchInfo({ ...matchInfo, timerDisabled: false, timer: null });
     setTimer(null);
   }
 
@@ -225,6 +225,8 @@ export default function ControlPlayer({
               balls: matchInfo.balls,
               timerDisabled: matchInfo.timerDisabled,
               started: !matchInfo.started,
+              time: time,
+              timer: 1000,
             });
           }}
         >
@@ -240,6 +242,7 @@ export default function ControlPlayer({
               balls: matchInfo.balls,
               timerDisabled: matchInfo.timerDisabled,
               started: !matchInfo.started,
+              time: time,
             });
           }}
         >

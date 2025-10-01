@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
-import Player from './Player';
+import Player from './components/Player';
 import { useLocation } from 'react-router';
 
 export default function Display({ setBreak, isBreak }) {

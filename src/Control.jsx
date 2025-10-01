@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ControlPlayer from './components/ControlPlayer';
 import { useLocation } from 'react-router';
 
@@ -36,8 +36,6 @@ export default function Control({ setBreak, isBreak }) {
         }),
       );
   }
-
-  const [] = useState(false);
 
   const [matchInfoRed, setMatchInfoRed] = useState({
     points: 4,
