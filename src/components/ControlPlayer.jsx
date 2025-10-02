@@ -7,6 +7,7 @@ export default function ControlPlayer({
   matchInfo,
   isRightSide,
   isBreak,
+  setBreak,
   update,
   switchColors,
   toggleOtherTimer,
@@ -73,6 +74,7 @@ export default function ControlPlayer({
   }
 
   function startTimer() {
+    setBreak(true);
     setMatchInfo({ ...matchInfo, break: false, timer: 1000 });
     toggleOtherTimer();
     setTimer(1000);
@@ -119,13 +121,12 @@ export default function ControlPlayer({
               <button
                 className='btn btn-outline-success'
                 onClick={() => {
-                  if (matchInfo.points < 6)
-                    setMatchInfo({
-                      points: matchInfo.points + 1,
-                      balls: matchInfo.balls,
-                      timerDisabled: matchInfo.timerDisabled,
-                      started: matchInfo.started,
-                    });
+                  setMatchInfo({
+                    points: matchInfo.points + 1,
+                    balls: matchInfo.balls,
+                    timerDisabled: matchInfo.timerDisabled,
+                    started: matchInfo.started,
+                  });
                 }}
               >
                 <svg

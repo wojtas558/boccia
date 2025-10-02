@@ -6,6 +6,7 @@ import { Route, Routes, BrowserRouter } from 'react-router';
 import Display from './Display';
 
 function App() {
+  //isBreak: true - wyłączone, false - włączone
   const [isBreak, setBreak] = useState(true);
 
   return (

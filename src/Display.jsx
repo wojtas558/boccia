@@ -131,11 +131,8 @@ export default function Display({ setBreak, isBreak }) {
           </div>
         </div>
         <div className='bg-dark border mt-4 align-self-center p-2'>
-          <div>END 2</div>
+          <div>END {matchInfo.currentEnd}</div>
         </div>
-      </div>
-      <div className='position-absolute header mainTimer'>
-        <div>0:00</div>
       </div>
       <Player
         playerInfo={{

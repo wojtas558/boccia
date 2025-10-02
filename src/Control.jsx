@@ -1,16 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ControlPlayer from './components/ControlPlayer';
 import { supabase } from './supabase';
 import { useParams } from 'react-router';
 
 export default function Control({ setBreak, isBreak }) {
   const [socket, setSocket] = useState(null);
+  const [timer, setTimer] = useState(null);
+  const [time, setTime] = useState(90);
   const { id } = useParams();
 
   useEffect(() => {
     async function fetch() {
       const temp = await supabase.from('matches').select().eq('id', id);
-      setMatchData(temp.data[0]);
+      setMatchData({ ...temp.data[0], currentEnd: 1 });
     }
     fetch();
 
@@ -29,16 +31,50 @@ export default function Control({ setBreak, isBreak }) {
     return () => ws.close();
   }, [id]);
 
+  function getTime() {
+    if (time === 0) {
+      setTimer(null);
+      setTime(90);
+
+      return '0:00';
+    }
+
+    return (
+      parseInt(time / 60) +
+      ':' +
+      (time % 60).toLocaleString('en-US', { minimumIntegerDigits: 2 })
+    );
+  }
+
   function sendMess() {
     setInit(false);
     if (socket && socket.readyState === WebSocket.OPEN)
       socket.send(
         JSON.stringify({
           id: id,
+          currentEnd: matchData.currentEnd,
           red: matchInfoRed,
           blue: matchInfoBlue,
         }),
       );
+  }
+
+  function useInterval(callback, delay) {
+    const savedCallback = useRef();
+
+    useEffect(() => {
+      savedCallback.current = callback;
+    }, [callback]);
+
+    useEffect(() => {
+      function tick() {
+        savedCallback.current();
+      }
+      if (delay !== null) {
+        let id = setInterval(tick, delay);
+        return () => clearInterval(id);
+      }
+    }, [delay]);
   }
 
   const [matchInfoRed, setMatchInfoRed] = useState({
@@ -56,6 +92,20 @@ export default function Control({ setBreak, isBreak }) {
 
   const [matchData, setMatchData] = useState([]);
   const [init, setInit] = useState(false);
+
+  useEffect(() => {
+    sendMess();
+  }, [matchData]);
+
+  useEffect(() => {
+    setTime(90);
+
+    setTimer(isBreak ? null : 1000);
+  }, [isBreak]);
+
+  useInterval(() => {
+    setTime(time - 1);
+  }, timer);
 
   return (
     <div className='container-fluid d-flex main p-0 position-relative text-white'>
@@ -76,10 +126,37 @@ export default function Control({ setBreak, isBreak }) {
         }}
         setMatchInfo={setMatchInfoRed}
         isBreak={isBreak}
+        setBreak={setBreak}
       />
       <div className='header controlHeader fw-bold fs-4 text-center d-flex flex-column '>
-        <div className='bg-dark border p-2'>
-          <div>END 2/{matchData.maxEnds}</div>
+        <div className='bg-dark border p-2 d-flex align-items-center justify-content-center gap-2'>
+          <button
+            className='btn btn-outline-danger'
+            onClick={() => {
+              if (matchData.currentEnd > 1)
+                setMatchData({
+                  ...matchData,
+                  currentEnd: matchData.currentEnd - 1,
+                });
+            }}
+          >
+            <b>-</b>
+          </button>
+          <div>
+            END {matchData.currentEnd}/{matchData.maxEnds}
+          </div>
+          <button
+            className='btn btn-outline-success'
+            onClick={() => {
+              if (matchData.currentEnd < matchData.maxEnds)
+                setMatchData({
+                  ...matchData,
+                  currentEnd: matchData.currentEnd + 1,
+                });
+            }}
+          >
+            <b>+</b>
+          </button>
         </div>
         <button
           className='btn btn-warning mx-2 mt-4 fs-4 fw-bold'
@@ -103,10 +180,10 @@ export default function Control({ setBreak, isBreak }) {
             });
           }}
         >
-          BREAK
+          PRZERWA
         </button>
         <button className='btn btn-warning mx-2 mt-5 fs-4 fw-bold'>
-          END RESULT
+          WYNIK KOŃCOWY
         </button>
       </div>
       {/* <div className='header mainTimer'>
@@ -123,9 +200,9 @@ export default function Control({ setBreak, isBreak }) {
       </div> */}
       <div className='header bottom-0' style={{ width: '60vw' }}>
         <div className='bg-dark d-flex justify-content-between border p-2 temp'>
-          <button className='btn btn-warning m-2 fw-bold'>VIEW RAPORT</button>
-          <div className='header fs-2'>END BUFFER</div>
-          <div className='border fs-2 px-1'>0:00</div>
+          <button className='btn btn-warning m-2 fw-bold'>ZOBACZ RAPORT</button>
+          <div className='header fs-2'>Do końca przerwy</div>
+          <div className='border fs-2 px-1'>{getTime()}</div>
         </div>
       </div>
       <ControlPlayer
@@ -145,6 +222,7 @@ export default function Control({ setBreak, isBreak }) {
           });
         }}
         isBreak={isBreak}
+        setBreak={setBreak}
         isRightSide
       />
     </div>
