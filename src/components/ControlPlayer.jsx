@@ -47,7 +47,7 @@ export default function ControlPlayer({
   const [timer, setTimer] = useState(null);
   const [time, setTime] = useState(5 * 60);
 
-  useInterval(() => setTime(time - 1), isBreak ? null : timer);
+  useInterval(() => setTime(time - 1), !isBreak ? null : timer);
 
   function getTime() {
     return (
